@@ -1,4 +1,6 @@
-﻿using DanskeBankTest.Services.Types;
+﻿using DanskeBankTest.Services.ExchangeRate;
+using DanskeBankTest.Services.Types;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +14,8 @@ namespace DanskeBankTest.Services
         ValueTask<Money> Exchange(ExchangeRequest request, CancellationToken ct);
     }
 
-    public class ExchangeService : IExchangeService
+    public class ExchangeService(
+        [FromKeyedServices(KeyedServicesNames.ExchangeRateRealtime)] IEnumerable<IExchangeRateService> exchangeRateServices) : IExchangeService
     {
         public async ValueTask<Money> Exchange(ExchangeRequest request, CancellationToken ct)
         {

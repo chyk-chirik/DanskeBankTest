@@ -2,7 +2,10 @@
 using DanskeBankTest.Run;
 using DanskeBankTest.Services;
 using Microsoft.Extensions.DependencyInjection;
-
+args = [
+    "EUR/USD",
+    "100"
+];
 if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out var errorMessage))
 {
     Console.WriteLine(errorMessage);
