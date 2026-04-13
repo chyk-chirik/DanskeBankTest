@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="DanskeBankTest.Run/DanskeBankTest.Run.csproj" />
+  <Project Path="DanskeBankTest.Services.Tests/DanskeBankTest.Services.Tests.csproj" />
+  <Project Path="DanskeBankTest.Services/DanskeBankTest.Services.csproj" />
+</Solution>
