@@ -1,5 +1,7 @@
 ﻿
+using DanskeBankTest.Run;
 using DanskeBankTest.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out var errorMessage))
 {
@@ -7,4 +9,7 @@ if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out 
     return;
 }
 
+var serviceCollection = new ServiceCollection();
+//serviceCollection.Configure();
 
+using var sp = serviceCollection.BuildServiceProvider();
