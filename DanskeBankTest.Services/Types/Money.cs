@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DanskeBankTest.Services
+namespace DanskeBankTest.Services.Types
 {
     public record Money(decimal Amount, Currency Currency);
 }

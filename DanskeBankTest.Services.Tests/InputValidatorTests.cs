@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using DanskeBankTest.Services.Types;
+using Shouldly;
 
 namespace DanskeBankTest.Services.Tests
 {

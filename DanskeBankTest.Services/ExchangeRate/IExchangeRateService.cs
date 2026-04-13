@@ -1,4 +1,6 @@
-﻿namespace DanskeBankTest.Services.ExchangeRate
+﻿using DanskeBankTest.Services.Types;
+
+namespace DanskeBankTest.Services.ExchangeRate
 {
     public interface IExchangeRateService
     {
