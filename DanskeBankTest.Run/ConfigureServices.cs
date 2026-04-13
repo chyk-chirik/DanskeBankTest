@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DanskeBankTest.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace DanskeBankTest.Run
     {
         public static void Configure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<IExchangeService, ExchangeService>();
         }
     }
 }

@@ -10,6 +10,11 @@ if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out 
 }
 
 var serviceCollection = new ServiceCollection();
-//serviceCollection.Configure();
+serviceCollection.Configure(null!);
 
 using var sp = serviceCollection.BuildServiceProvider();
+var exchangeService = sp.GetRequiredService<IExchangeService>();
+
+var money = await exchangeService.Exchange(exchangeRequest!, CancellationToken.None);
+
+Console.WriteLine(money.Amount);
