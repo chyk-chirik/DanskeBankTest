@@ -9,7 +9,7 @@ namespace DanskeBankTest.Services
         Eur,
         Usd,
         Dkk,
-        Sec,
+        Sek,
         Nok,
         Gbp,
         Chf,

@@ -4,5 +4,5 @@ using System.Text;
 
 namespace DanskeBankTest.Services
 {
-    public record ExchangeRequest(Currency MainCurrency, Currency MoneyCurrency, decimal Amount);
+    public record CurrencyRate(Currency MainCurrency, Currency MoneyCurrency, decimal Rate);
 }
