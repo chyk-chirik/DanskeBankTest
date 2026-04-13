@@ -1,2 +1,9 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿
+using DanskeBankTest.Services;
+
+if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out var errorMessage))
+{
+    return;
+}
+
+
