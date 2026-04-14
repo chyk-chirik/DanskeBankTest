@@ -6,7 +6,7 @@ namespace DanskeBankTest.Services.Types
 {
     public record CurrencyRate(CurrencyPair CurrencyPair, decimal Rate)
     {
-        public bool TryConvert(Money money, out Money result)
+        public bool TryExchange(Money money, out Money result)
         {
             if (money.Currency != CurrencyPair.MainCurrency)
             {
