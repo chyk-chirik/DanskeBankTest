@@ -5,9 +5,9 @@ using System.Text;
 
 namespace DanskeBankTest.Services.ExchangeRate
 {
-    public class StaticRateProvider : IExchangeRateService
+    public class OfflineRateProvider : IExchangeRateService
     {
-        public ValueTask<CurrencyRate> GetExchangeRate(Currency mainCurrency, Currency moneyCurrency, CancellationToken ct)
+        public ValueTask<CurrencyRate> GetExchangeRate(CurrencyPair currencyPair, CancellationToken ct)
         {
             throw new NotImplementedException();
         }

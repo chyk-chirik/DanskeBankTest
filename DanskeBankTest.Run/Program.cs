@@ -1,6 +1,8 @@
 ﻿
 using DanskeBankTest.Run;
 using DanskeBankTest.Services;
+using DanskeBankTest.Services.ExchangeRate;
+using DanskeBankTest.Services.Types;
 using Microsoft.Extensions.DependencyInjection;
 args = [
     "EUR/USD",
@@ -16,8 +18,9 @@ var serviceCollection = new ServiceCollection();
 serviceCollection.Configure(null!);
 
 using var sp = serviceCollection.BuildServiceProvider();
-var exchangeService = sp.GetRequiredService<IExchangeService>();
 
-var money = await exchangeService.Exchange(exchangeRequest!, CancellationToken.None);
+var exchangeRateService = sp.GetRequiredService<IExchangeRateService>();
+var exchangeRate = await exchangeRateService.GetExchangeRate(exchangeRequest!.CurrencyPair, CancellationToken.None);
+var exchangedMoney = exchangeRate.Convert(exchangeRequest.GetExchangeValue());
 
-Console.WriteLine(money.Amount);
+Console.WriteLine(exchangedMoney);

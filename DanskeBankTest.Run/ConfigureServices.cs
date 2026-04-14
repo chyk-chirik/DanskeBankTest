@@ -9,8 +9,6 @@ namespace DanskeBankTest.Run
     {
         public static void Configure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IExchangeService, ExchangeService>();
-
             services.AddKeyedTransient<IExchangeRateService, ExchangeRateApiProvider>(KeyedServicesNames.ExchangeRateRealtime);
             services.AddKeyedTransient<IExchangeRateService, FreeCurrencyApiProvider>(KeyedServicesNames.ExchangeRateRealtime);
 

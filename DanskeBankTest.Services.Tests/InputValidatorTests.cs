@@ -49,8 +49,7 @@ namespace DanskeBankTest.Services.Tests
             errorMessage.ShouldBeNull();
 
             exchange.ShouldNotBeNull();
-            exchange.MainCurrency.ShouldBe(mainCurrency);
-            exchange.MoneyCurrency.ShouldBe(moneyCurrency);
+            exchange.CurrencyPair.ShouldBe(new CurrencyPair(mainCurrency, moneyCurrency));
             exchange.Amount.ShouldBe(decimal.Parse(amount));
         }
     }

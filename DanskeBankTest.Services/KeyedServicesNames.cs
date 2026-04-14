@@ -7,6 +7,6 @@ namespace DanskeBankTest.Services
     public class KeyedServicesNames
     {
         public const string ExchangeRateRealtime = "ExchangeRateRealtime";
-        public const string ExchangeRateStatic = "ExchangeRateStatic";
+        public const string ExchangeRateOffline = "ExchangeRateOffline";
     }
 }

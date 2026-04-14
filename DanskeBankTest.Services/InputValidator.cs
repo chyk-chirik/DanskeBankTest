@@ -45,7 +45,7 @@ namespace DanskeBankTest.Services
                 return false;
             }
 
-            exchangeRequest = new ExchangeRequest(mainCurrency, moneyCurrency, amount);
+            exchangeRequest = new ExchangeRequest(new CurrencyPair(mainCurrency, moneyCurrency), amount);
             return true;
         }
     }

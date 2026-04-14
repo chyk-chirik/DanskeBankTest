@@ -7,7 +7,7 @@ namespace DanskeBankTest.Services.ExchangeRate
 {
     public class ExchangeRateApiProvider : IExchangeRateService
     {
-        public ValueTask<CurrencyRate> GetExchangeRate(Currency mainCurrency, Currency moneyCurrency, CancellationToken ct)
+        public ValueTask<CurrencyRate> GetExchangeRate(CurrencyPair currencyPair, CancellationToken ct)
         {
             throw new NotImplementedException();
         }
