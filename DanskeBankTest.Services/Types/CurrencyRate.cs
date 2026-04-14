@@ -6,12 +6,24 @@ namespace DanskeBankTest.Services.Types
 {
     public record CurrencyRate(CurrencyPair CurrencyPair, decimal Rate)
     {
-        public Money Convert(Money money)
+        public bool TryConvert(Money money, out Money result)
         {
-            if (money.Currency != CurrencyPair.MoneyCurrency)
-                throw new InvalidOperationException($"Cannot convert money with currency {money.Currency} using this rate, because it is for currency pair {CurrencyPair}.");
-            
-            return new Money(money.Amount * Rate, CurrencyPair.MainCurrency);
+            if (money.Currency != CurrencyPair.MainCurrency)
+            {
+                result = null!;
+                return false;
+            }
+
+            if(CurrencyPair.MainCurrency == CurrencyPair.MoneyCurrency)
+            {
+                result = new Money(money.Amount, CurrencyPair.MoneyCurrency);
+            }
+            else
+            {
+                result = new Money(money.Amount * Rate, CurrencyPair.MoneyCurrency);
+            }
+
+            return true;
         }
     }
 }

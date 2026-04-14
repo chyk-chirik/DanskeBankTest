@@ -21,6 +21,6 @@ using var sp = serviceCollection.BuildServiceProvider();
 
 var exchangeRateService = sp.GetRequiredService<IExchangeRateService>();
 var exchangeRate = await exchangeRateService.GetExchangeRate(exchangeRequest!.CurrencyPair, CancellationToken.None);
-var exchangedMoney = exchangeRate.Convert(exchangeRequest.GetExchangeValue());
+exchangeRate.TryConvert(exchangeRequest.GetOriginalMoney(), out var exchangedMoney);
 
 Console.WriteLine(exchangedMoney);
