@@ -25,5 +25,17 @@ namespace DanskeBankTest.Services.Types
 
             return true;
         }
+
+        public static CurrencyRate FromRelativeRate(CurrencyRate main, CurrencyRate money)
+        {
+            if (main.CurrencyPair.MainCurrency != money.CurrencyPair.MainCurrency)
+            {
+                throw new ArgumentException("Main currency must be the same for both rates.");
+            }
+
+            var relativeRate = money.Rate / main.Rate;
+
+            return new CurrencyRate(new CurrencyPair(main.CurrencyPair.MoneyCurrency, money.CurrencyPair.MoneyCurrency), relativeRate);
+        }
     }
 }

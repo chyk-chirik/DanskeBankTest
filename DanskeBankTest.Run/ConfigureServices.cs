@@ -1,7 +1,12 @@
 ﻿using DanskeBankTest.Services;
 using DanskeBankTest.Services.ExchangeRate;
+using DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi;
+using DanskeBankTest.Services.Network;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System.Runtime;
 
 namespace DanskeBankTest.Run
 {
@@ -9,18 +14,31 @@ namespace DanskeBankTest.Run
     {
         public static void Configure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddKeyedTransient<IExchangeRateService, ExchangeRateApiProvider>(KeyedServicesNames.ExchangeRateRealtime);
-            services.AddKeyedTransient<IExchangeRateService, FreeCurrencyApiProvider>(KeyedServicesNames.ExchangeRateRealtime);
+            var mode = configuration.GetValue<ApplicationMode>("ApplicationMode");
 
-            services.AddTransient<Func<string, IEnumerable<IExchangeRateService>>>(sp => key =>
+            if(mode == ApplicationMode.Production)
             {
-                return key switch
-                {
-                    KeyedServicesNames.ExchangeRateRealtime => [
-                        sp.GetRequiredKeyedService<IExchangeRateService>(KeyedServicesNames.ExchangeRateRealtime)],
-                    _ => Enumerable.Empty<IExchangeRateService>()
-                };
-            });
+                services.ConfigureFreeCurrencyApi(configuration);
+            }
+            else
+            {
+                services.AddTransient<IExchangeRateService, OfflineRateProvider>();
+            }
+
+            services.AddMemoryCache();
+        }
+
+        public static void ConfigureFreeCurrencyApi(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<FreeCurrencyApiOptions>(configuration.GetSection("FreeCurrencyApiOptions"));
+            services.AddHttpClient(KeyedServicesNames.ExchangeRateRealtime, (sp, client) =>
+            {
+                var settings = sp.GetRequiredService<IOptions<FreeCurrencyApiOptions>>().Value;
+
+                client.BaseAddress = new Uri(settings.BaseUrl);
+            }).AddHttpMessageHandler<ApiKeyHandler>();
+
+            services.AddTransient<ApiKeyHandler>();
         }
     }
 }

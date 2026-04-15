@@ -3,6 +3,7 @@ using DanskeBankTest.Run;
 using DanskeBankTest.Services;
 using DanskeBankTest.Services.ExchangeRate;
 using DanskeBankTest.Services.Types;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 args = [
     "EUR/USD",
@@ -14,8 +15,12 @@ if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out 
     return;
 }
 
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .Build();
+
 var serviceCollection = new ServiceCollection();
-serviceCollection.Configure(null!);
+serviceCollection.Configure(configuration);
 
 using var sp = serviceCollection.BuildServiceProvider();
 

@@ -7,7 +7,7 @@ namespace DanskeBankTest.Services.ExchangeRate
 {
     public class OfflineRateProvider : IExchangeRateService
     {
-        public ValueTask<CurrencyRate> GetExchangeRate(CurrencyPair currencyPair, CancellationToken ct)
+        public Task<CurrencyRate> GetExchangeRate(CurrencyPair currencyPair, CancellationToken ct)
         {
             throw new NotImplementedException();
         }
