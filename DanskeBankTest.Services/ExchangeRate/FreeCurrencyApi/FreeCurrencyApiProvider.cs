@@ -16,15 +16,13 @@ namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
     {
         private static string AllCurrencies = Uri.EscapeDataString(string.Join(",", Enum.GetValues<Currency>()));
 
-        private string CacheKey = $"FreeCurrencyApiProvider_{options.Value.BaseCurrency}";
-
         public async Task<CurrencyRate> GetExchangeRate(CurrencyPair currencyPair, CancellationToken ct)
         {
             var rateData = options.Value.CacheInSeconds.HasValue
                 ? await GetFromCache(currencyPair, ct)
                 : await GetLatestRates(ct);
 
-            var moneyCurrencyRate = new CurrencyRate(currencyPair, rateData.Data[currencyPair.MoneyCurrency]);
+            var moneyCurrencyRate = new CurrencyRate(new CurrencyPair(rateData.BaseCurrency, currencyPair.MoneyCurrency), rateData.Data[currencyPair.MoneyCurrency]);
 
             if (rateData.BaseCurrency == currencyPair.MainCurrency)
             {
@@ -32,15 +30,14 @@ namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
             }
             else
             {
-                var mainCurrencyRate = new CurrencyRate(currencyPair, rateData.Data[currencyPair.MainCurrency]);
-
+                var mainCurrencyRate = new CurrencyRate(new CurrencyPair(rateData.BaseCurrency, currencyPair.MainCurrency), rateData.Data[currencyPair.MainCurrency]);
                 return CurrencyRate.FromRelativeRate(mainCurrencyRate, moneyCurrencyRate);
             }
         }
 
         private Task<RateData> GetFromCache(CurrencyPair currencyPair, CancellationToken ct)
         {
-            return cache.GetOrCreateAsync(CacheKey, async entry =>
+            return cache.GetOrCreateAsync($"FreeCurrencyApiProvider_{options.Value.BaseCurrency}", async entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(options.Value.CacheInSeconds!.Value);
 
