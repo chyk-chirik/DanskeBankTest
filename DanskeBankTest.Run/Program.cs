@@ -2,18 +2,8 @@
 using DanskeBankTest.Run;
 using DanskeBankTest.Services;
 using DanskeBankTest.Services.ExchangeRate;
-using DanskeBankTest.Services.Types;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-args = [
-    "EUR/USD",
-    "100"
-];
-if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out var errorMessage))
-{
-    Console.WriteLine(errorMessage);
-    return;
-}
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -24,9 +14,25 @@ serviceCollection.Configure(configuration);
 
 using var sp = serviceCollection.BuildServiceProvider();
 
-var exchangeRateService = sp.GetRequiredService<IExchangeRateService>();
-var exchangeRate = await exchangeRateService.GetExchangeRate(exchangeRequest!.CurrencyPair, CancellationToken.None);
+while (true)
+{
+    if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out var errorMessage))
+    {
+        Console.WriteLine(errorMessage);
+    }
+    else
+    {
+        using var scopedSp = sp.CreateScope();
+        var exchangeRateService = scopedSp.ServiceProvider.GetRequiredService<IExchangeRateService>();
+        var exchangeRate = await exchangeRateService.GetExchangeRate(exchangeRequest!.CurrencyPair, CancellationToken.None);
 
-var exchangedMoney = exchangeRate * exchangeRequest.GetOriginalMoney();
+        var exchangedMoney = exchangeRate * exchangeRequest.GetOriginalMoney();
 
-Console.WriteLine(exchangedMoney);
+        Console.WriteLine(exchangedMoney);
+    }
+
+     args = Console.ReadLine()?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+}
+
+
+
