@@ -14,6 +14,20 @@ namespace DanskeBankTest.Services.Tests
         [DataRow(Currency.EUR, Currency.DKK, Currency.DKK)]
         [DataRow(Currency.EUR, Currency.EUR, Currency.DKK)]
         [DataRow(Currency.EUR, Currency.EUR, Currency.EUR)]
+        public void ExchangeOfTwoCurrencyRatesWithSameMainCurrency(Currency baseCurrency, Currency currency1, Currency currency2)
+        {
+            // good point to rethink: if somebody tries to initialize a CurrencyRate with same main and money currency, should we throw an exception or just allow it? 
+            var rate1 = new CurrencyRate(new CurrencyPair(baseCurrency, currency1), 1.5m);
+            var rate2 = new CurrencyRate(new CurrencyPair(baseCurrency, currency2), 2.5m);
+
+            CurrencyRate.GetRelativeMoneyRate(rate1, rate2).ShouldBe(new CurrencyRate(new CurrencyPair(currency1, currency2), rate2.Rate / rate1.Rate));
+        }
+
+        [TestMethod]
+        [DataRow(Currency.EUR, Currency.DKK, Currency.EUR)]
+        [DataRow(Currency.EUR, Currency.DKK, Currency.DKK)]
+        [DataRow(Currency.EUR, Currency.EUR, Currency.DKK)]
+        [DataRow(Currency.EUR, Currency.EUR, Currency.EUR)]
         public void IfCurrencyRateMainCurrencyNotSameAsMoneyCurrency_ExchangeFails(Currency rateMainCurrency, Currency rateMoneyCurrency, Currency moneyCurrency)
         {
             var currencyRate = new CurrencyRate(new CurrencyPair(rateMainCurrency, rateMoneyCurrency), 1.5m);
@@ -48,15 +62,5 @@ namespace DanskeBankTest.Services.Tests
             var exchangeResult = money * currencyRate;
             exchangeResult.ShouldBe(money);
         }
-
-        //[TestMethod]
-        //public void ExchangeMoneyWhenMainCurrencyMatchesMoneyCurrency_NoMathMustBePerfomedAndMoneyShouldNotBeChanged()
-        //{
-        //    var currencyRate = new CurrencyRate(new CurrencyPair(Currency.EUR, Currency.EUR), 2); // indicator if calculation was involved
-        //    var money = new Money(100m, currencyRate.CurrencyPair.MainCurrency);
-
-        //    var exchangeResult = money * currencyRate;
-        //    exchangeResult.ShouldBe(money);
-        //}
     }
 }

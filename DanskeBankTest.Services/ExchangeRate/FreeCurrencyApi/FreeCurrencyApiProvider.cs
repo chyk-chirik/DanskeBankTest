@@ -18,6 +18,11 @@ namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
 
         public async Task<CurrencyRate> GetExchangeRate(CurrencyPair currencyPair, CancellationToken ct)
         {
+            if (currencyPair.IsSameCurrency)
+            {
+                return new CurrencyRate(currencyPair, 1m);
+            }
+
             var rateData = options.Value.CacheInSeconds.HasValue
                 ? await GetFromCache(currencyPair, ct)
                 : await GetLatestRates(ct);
@@ -31,7 +36,7 @@ namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
             else
             {
                 var mainCurrencyRate = new CurrencyRate(new CurrencyPair(rateData.BaseCurrency, currencyPair.MainCurrency), rateData.Data[currencyPair.MainCurrency]);
-                return CurrencyRate.FromRelativeRate(mainCurrencyRate, moneyCurrencyRate);
+                return CurrencyRate.GetRelativeMoneyRate(mainCurrencyRate, moneyCurrencyRate);
             }
         }
 

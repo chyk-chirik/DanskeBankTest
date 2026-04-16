@@ -14,9 +14,9 @@ namespace DanskeBankTest.Services.Types
                 return false;
             }
 
-            if(CurrencyPair.MainCurrency == CurrencyPair.MoneyCurrency)
+            if(CurrencyPair.IsSameCurrency)
             {
-                result = new Money(money.Amount, CurrencyPair.MoneyCurrency);
+                result = money;
             }
             else
             {
@@ -26,16 +26,16 @@ namespace DanskeBankTest.Services.Types
             return true;
         }
 
-        public static CurrencyRate FromRelativeRate(CurrencyRate main, CurrencyRate money)
+        public static CurrencyRate GetRelativeMoneyRate(CurrencyRate newMain, CurrencyRate newMoney)
         {
-            if (main.CurrencyPair.MainCurrency != money.CurrencyPair.MainCurrency)
+            if (newMain.CurrencyPair.MainCurrency != newMoney.CurrencyPair.MainCurrency)
             {
                 throw new ArgumentException("Main currency must be the same for both rates.");
             }
 
-            var relativeRate = money.Rate / main.Rate;
+            var relativeRate = newMoney.Rate / newMain.Rate;
 
-            return new CurrencyRate(new CurrencyPair(main.CurrencyPair.MoneyCurrency, money.CurrencyPair.MoneyCurrency), relativeRate);
+            return new CurrencyRate(new CurrencyPair(newMain.CurrencyPair.MoneyCurrency, newMoney.CurrencyPair.MoneyCurrency), relativeRate);
         }
     }
 }
