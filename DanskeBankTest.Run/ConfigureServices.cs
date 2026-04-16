@@ -26,7 +26,7 @@ namespace DanskeBankTest.Run
                 var settings = sp.GetRequiredService<IOptions<FreeCurrencyApiOptions>>().Value;
 
                 client.BaseAddress = new Uri(settings.BaseUrl);
-            }).AddHttpMessageHandler<FreeCurrencyApiKeyHandler>();
+            }).AddHttpMessageHandler<FreeCurrencyApiKeyHandler>(); // with current fusion cache setting we can avoid jitter/curcuit breaks/retries
 
             services.AddTransient<FreeCurrencyApiKeyHandler>();
         }

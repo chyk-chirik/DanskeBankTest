@@ -33,7 +33,8 @@ namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
                    IsFailSafeEnabled = true,
                    FailSafeMaxDuration = TimeSpan.FromHours(2), // issue must be fixed within 2 hours, otherwise financial risk is high 
                    FailSafeThrottleDuration = TimeSpan.FromSeconds(options.Value.CacheInSeconds!.Value / 3), // here I assume cache time is more then 3 secs always
-                   EagerRefreshThreshold = 0.9f 
+                   EagerRefreshThreshold = 0.9f,
+                   FactorySoftTimeout = TimeSpan.Zero
                },
                ct
            );
