@@ -1,13 +1,12 @@
-﻿using DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
-namespace DanskeBankTest.Services.Network
+namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
 {
-    public class ApiKeyHandler(IOptions<FreeCurrencyApiOptions> settings) : DelegatingHandler
+    public class FreeCurrencyApiKeyHandler(IOptions<FreeCurrencyApiOptions> settings) : DelegatingHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {

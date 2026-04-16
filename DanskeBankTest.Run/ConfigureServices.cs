@@ -1,7 +1,6 @@
 ﻿using DanskeBankTest.Services;
 using DanskeBankTest.Services.ExchangeRate;
 using DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi;
-using DanskeBankTest.Services.Network;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,16 +13,7 @@ namespace DanskeBankTest.Run
     {
         public static void Configure(this IServiceCollection services, IConfiguration configuration)
         {
-            var mode = configuration.GetValue<ApplicationMode>("ApplicationMode");
-
-            if(mode == ApplicationMode.Production)
-            {
-                services.ConfigureFreeCurrencyApi(configuration);
-            }
-            else
-            {
-                services.AddTransient<IExchangeRateService, OfflineRateProvider>();
-            }
+            services.ConfigureFreeCurrencyApi(configuration);
 
             services.AddMemoryCache();
         }
@@ -36,9 +26,9 @@ namespace DanskeBankTest.Run
                 var settings = sp.GetRequiredService<IOptions<FreeCurrencyApiOptions>>().Value;
 
                 client.BaseAddress = new Uri(settings.BaseUrl);
-            }).AddHttpMessageHandler<ApiKeyHandler>();
+            }).AddHttpMessageHandler<FreeCurrencyApiKeyHandler>();
 
-            services.AddTransient<ApiKeyHandler>();
+            services.AddTransient<FreeCurrencyApiKeyHandler>();
         }
     }
 }
