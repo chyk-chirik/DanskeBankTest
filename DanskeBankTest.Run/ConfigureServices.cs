@@ -31,7 +31,7 @@ namespace DanskeBankTest.Run
         public static void ConfigureFreeCurrencyApi(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<FreeCurrencyApiOptions>(configuration.GetSection("FreeCurrencyApiOptions"));
-            services.AddHttpClient(KeyedServicesNames.ExchangeRateRealtime, (sp, client) =>
+            services.AddHttpClient<IExchangeRateService, FreeCurrencyApiProvider>((sp, client) =>
             {
                 var settings = sp.GetRequiredService<IOptions<FreeCurrencyApiOptions>>().Value;
 

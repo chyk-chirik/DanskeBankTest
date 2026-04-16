@@ -38,9 +38,9 @@ namespace DanskeBankTest.Services.Tests
         }
 
         [TestMethod]
-        [DataRow("DKK/EUR", "100.31", Currency.Dkk, Currency.Eur)]
-        [DataRow("EUR/DKK", "100.31", Currency.Eur, Currency.Dkk)]
-        [DataRow("DKK/DKK", "100.31", Currency.Dkk, Currency.Dkk)]
+        [DataRow("DKK/EUR", "100.31", Currency.DKK, Currency.EUR)]
+        [DataRow("EUR/DKK", "100.31", Currency.EUR, Currency.DKK)]
+        [DataRow("DKK/DKK", "100.31", Currency.DKK, Currency.DKK)]
         public void ValidArguments_ReturnTrueAndCorrectlyParsedValues(string currencyPair, string amount, Currency mainCurrency, Currency moneyCurrency)
         {
             InputValidator.ValidateConsoleArguments([currencyPair, amount], out var exchange, out var errorMessage)

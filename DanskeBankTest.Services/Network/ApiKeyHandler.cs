@@ -14,7 +14,7 @@ namespace DanskeBankTest.Services.Network
             var uriBuilder = new UriBuilder(request.RequestUri!);
 
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["api_key"] = settings.Value.ApiKey;
+            query["apikey"] = settings.Value.ApiKey;
             uriBuilder.Query = query.ToString();
 
             request.RequestUri = uriBuilder.Uri;

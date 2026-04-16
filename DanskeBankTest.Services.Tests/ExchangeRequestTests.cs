@@ -12,10 +12,10 @@ namespace DanskeBankTest.Services.Tests
         [TestMethod]
         public void ConvertExchangeRequestToOrinalMoney_MainCurrencyMustBeUsedAsAmountCurrency()
         {
-            var mainCurrency = Currency.Usd;
+            var mainCurrency = Currency.USD;
             var amount = 100m;
 
-            var exchangeRequest = new ExchangeRequest(new CurrencyPair(mainCurrency, Currency.Eur), amount);
+            var exchangeRequest = new ExchangeRequest(new CurrencyPair(mainCurrency, Currency.EUR), amount);
             var originalSum = exchangeRequest.GetOriginalMoney();
 
             originalSum.ShouldBe(new Money(amount, mainCurrency));

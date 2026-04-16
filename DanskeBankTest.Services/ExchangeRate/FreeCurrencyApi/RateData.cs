@@ -6,11 +6,10 @@ using System.Text.Json.Serialization;
 
 namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
 {
-    internal class RateData
+    public class RateData
     {
-        [JsonIgnore]
         public Currency BaseCurrency { get; set; }
-
+        
         public Dictionary<Currency, decimal> Data { get; set; } = null!;
     }
 }

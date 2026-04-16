@@ -10,10 +10,10 @@ namespace DanskeBankTest.Services.Tests
     public sealed class CurrencyRateTests
     {
         [TestMethod]
-        [DataRow(Currency.Eur, Currency.Dkk, Currency.Eur)]
-        [DataRow(Currency.Eur, Currency.Dkk, Currency.Dkk)]
-        [DataRow(Currency.Eur, Currency.Eur, Currency.Dkk)]
-        [DataRow(Currency.Eur, Currency.Eur, Currency.Eur)]
+        [DataRow(Currency.EUR, Currency.DKK, Currency.EUR)]
+        [DataRow(Currency.EUR, Currency.DKK, Currency.DKK)]
+        [DataRow(Currency.EUR, Currency.EUR, Currency.DKK)]
+        [DataRow(Currency.EUR, Currency.EUR, Currency.EUR)]
         public void IfCurrencyRateMainCurrencyNotSameAsMoneyCurrency_ExchangeFails(Currency rateMainCurrency, Currency rateMoneyCurrency, Currency moneyCurrency)
         {
             var currencyRate = new CurrencyRate(new CurrencyPair(rateMainCurrency, rateMoneyCurrency), 1.5m);
@@ -26,7 +26,7 @@ namespace DanskeBankTest.Services.Tests
         [TestMethod]
         public void ExchangeMoney_MoneyExchangedCorrectly()
         {
-            var currencyRate = new CurrencyRate(new CurrencyPair(Currency.Eur, Currency.Dkk), 7.47m);
+            var currencyRate = new CurrencyRate(new CurrencyPair(Currency.EUR, Currency.DKK), 7.47m);
             var money = new Money(100m, currencyRate.CurrencyPair.MainCurrency);
 
             var exchangeResultMoneyLeftOperand = money * currencyRate;
@@ -42,11 +42,21 @@ namespace DanskeBankTest.Services.Tests
         [TestMethod]
         public void ExchangeMoneyWhenMainCurrencyMatchesMoneyCurrency_NoMathMustBePerfomedAndMoneyShouldNotBeChanged()
         {
-            var currencyRate = new CurrencyRate(new CurrencyPair(Currency.Eur, Currency.Eur), 2); // indicator if calculation was involved
+            var currencyRate = new CurrencyRate(new CurrencyPair(Currency.EUR, Currency.EUR), 2); // indicator if calculation was involved
             var money = new Money(100m, currencyRate.CurrencyPair.MainCurrency);
 
             var exchangeResult = money * currencyRate;
             exchangeResult.ShouldBe(money);
         }
+
+        //[TestMethod]
+        //public void ExchangeMoneyWhenMainCurrencyMatchesMoneyCurrency_NoMathMustBePerfomedAndMoneyShouldNotBeChanged()
+        //{
+        //    var currencyRate = new CurrencyRate(new CurrencyPair(Currency.EUR, Currency.EUR), 2); // indicator if calculation was involved
+        //    var money = new Money(100m, currencyRate.CurrencyPair.MainCurrency);
+
+        //    var exchangeResult = money * currencyRate;
+        //    exchangeResult.ShouldBe(money);
+        //}
     }
 }
