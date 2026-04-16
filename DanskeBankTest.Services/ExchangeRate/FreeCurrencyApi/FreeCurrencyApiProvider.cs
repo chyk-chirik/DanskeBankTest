@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.Json;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
 {
     public class FreeCurrencyApiProvider(
         HttpClient http, 
         IOptions<FreeCurrencyApiOptions> options,
-        IMemoryCache cache) : IExchangeRateService
+        IFusionCache cache) : IExchangeRateService
     {
         private static string AllCurrencies = Uri.EscapeDataString(string.Join(",", Enum.GetValues<Currency>()));
 
@@ -23,9 +24,19 @@ namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
                 return new CurrencyRate(currencyPair, 1m);
             }
 
-            var rateData = options.Value.CacheInSeconds.HasValue
-                ? await GetFromCache(currencyPair, ct)
-                : await GetLatestRates(ct);
+            var rateData = await cache.GetOrSetAsync(
+               $"FreeCurrencyApiProvider_{options.Value.BaseCurrency}",
+               async ct => await GetLatestRates(ct),
+               new FusionCacheEntryOptions
+               {
+                   Duration = TimeSpan.FromSeconds(options.Value.CacheInSeconds!.Value),
+                   IsFailSafeEnabled = true,
+                   FailSafeMaxDuration = TimeSpan.FromHours(2), // issue must be fixed within 2 hours, otherwise financial risk is high 
+                   FailSafeThrottleDuration = TimeSpan.FromSeconds(options.Value.CacheInSeconds!.Value / 3), // here I assume cache time is more then 3 secs always
+                   EagerRefreshThreshold = 0.9f 
+               },
+               ct
+           );
 
             var moneyCurrencyRate = new CurrencyRate(new CurrencyPair(rateData.BaseCurrency, currencyPair.MoneyCurrency), rateData.Data[currencyPair.MoneyCurrency]);
 
@@ -38,16 +49,6 @@ namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
                 var mainCurrencyRate = new CurrencyRate(new CurrencyPair(rateData.BaseCurrency, currencyPair.MainCurrency), rateData.Data[currencyPair.MainCurrency]);
                 return CurrencyRate.GetRelativeMoneyRate(mainCurrencyRate, moneyCurrencyRate);
             }
-        }
-
-        private Task<RateData> GetFromCache(CurrencyPair currencyPair, CancellationToken ct)
-        {
-            return cache.GetOrCreateAsync($"FreeCurrencyApiProvider_{options.Value.BaseCurrency}", async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(options.Value.CacheInSeconds!.Value);
-
-                return await GetLatestRates(ct);
-            })!;
         }
 
 

@@ -15,7 +15,7 @@ namespace DanskeBankTest.Run
         {
             services.ConfigureFreeCurrencyApi(configuration);
 
-            services.AddMemoryCache();
+            services.AddFusionCache();
         }
 
         public static void ConfigureFreeCurrencyApi(this IServiceCollection services, IConfiguration configuration)

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Xml.Linq;
+using ZiggyCreatures.Caching.Fusion;
 
 namespace DanskeBankTest.Services.Tests
 {
@@ -23,38 +24,10 @@ namespace DanskeBankTest.Services.Tests
         [DataRow(Currency.DKK, Currency.DKK, Currency.USD)]
         [DataRow(Currency.DKK, Currency.EUR, Currency.DKK)]
         [DataRow(Currency.DKK, Currency.DKK, Currency.DKK)]
-        public async Task TestCorrectExchangeWhenNoCache(Currency baseCurrency, Currency mainCurrency, Currency moneyCurrency)
-        {
-            var settings = Options.Create(new FreeCurrencyApiOptions
-            {
-                BaseCurrency = baseCurrency,
-            });
-            TestCorrectExchange(mainCurrency, moneyCurrency, settings);
-        }
-
-        [TestMethod]
-        [DataRow(Currency.DKK, Currency.EUR, Currency.USD)]
-        [DataRow(Currency.DKK, Currency.DKK, Currency.USD)]
-        [DataRow(Currency.DKK, Currency.EUR, Currency.DKK)]
-        [DataRow(Currency.DKK, Currency.DKK, Currency.DKK)]
-        public async Task TestCorrectExchangeWithCache(Currency baseCurrency, Currency mainCurrency, Currency moneyCurrency)
-        {
-            var settings = Options.Create(new FreeCurrencyApiOptions
-            {
-                BaseCurrency = baseCurrency,
-                CacheInSeconds = 60
-            });
-
-            // second call should hit the cache
-            TestCorrectExchange(mainCurrency, moneyCurrency, settings);
-            TestCorrectExchange(mainCurrency, moneyCurrency, settings);
-        }
-
-        private static void TestCorrectExchange(Currency mainCurrency, Currency moneyCurrency, IOptions<FreeCurrencyApiOptions> settings)
+        public async Task TestCorrectExchange(Currency baseCurrency, Currency mainCurrency, Currency moneyCurrency)
         {
             var currencyPair = new CurrencyPair(mainCurrency, moneyCurrency);
 
-            var baseCurrency = settings.Value.BaseCurrency;
             var mainRate = baseCurrency == mainCurrency ? 1 : 2.1m;
             var moneyRate = baseCurrency == moneyCurrency ? 1 : 3.4m;
 
@@ -64,8 +37,14 @@ namespace DanskeBankTest.Services.Tests
                     ""{moneyCurrency}"" : {moneyRate}
                 }}
             }}");
-            
-            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+
+            var settings = Options.Create(new FreeCurrencyApiOptions
+            {
+                BaseCurrency = baseCurrency,
+                CacheInSeconds = 60
+            });
+
+            var memoryCache = new FusionCache(new FusionCacheOptions());
             var provider = new FreeCurrencyApiProvider(httpClient, settings, memoryCache);
 
             var rate = provider.GetExchangeRate(currencyPair, CancellationToken.None)
