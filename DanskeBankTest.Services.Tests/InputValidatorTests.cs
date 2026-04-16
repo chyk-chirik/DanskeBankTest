@@ -21,6 +21,7 @@ namespace DanskeBankTest.Services.Tests
         }
 
         [TestMethod]
+        [DataRow("DKK/eur", "100")]
         [DataRow("DKK/EUR", "-100")]
         [DataRow("DKK/EUR", "-100.21.2")]
         [DataRow("DKK/EUR", " ")]

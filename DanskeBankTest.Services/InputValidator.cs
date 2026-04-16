@@ -27,15 +27,15 @@ namespace DanskeBankTest.Services
                 return false;
             }
 
-            if (!Enum.TryParse<Currency>(currenciesArg[0], true, out var mainCurrency))
+            if (!Enum.TryParse<Currency>(currenciesArg[0], false, out var mainCurrency))
             {
-                errorMessage = $"Main currency: {currenciesArg[0]} is not supported";
+                errorMessage = $"Main currency: {currenciesArg[0]} is not supported or has non-iso format";
                 return false;
             }
 
-            if (!Enum.TryParse<Currency>(currenciesArg[1], true, out var moneyCurrency))
+            if (!Enum.TryParse<Currency>(currenciesArg[1], false, out var moneyCurrency))
             {
-                errorMessage = $"Money currency: {currenciesArg[1]} is not supported";
+                errorMessage = $"Money currency: {currenciesArg[1]} is not supported or has non-iso format";
                 return false;
             }
 
