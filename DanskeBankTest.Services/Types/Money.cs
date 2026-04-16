@@ -24,7 +24,7 @@ namespace DanskeBankTest.Services.Types
 
         public override string ToString()
         {
-            return $"{Amount} {Currency}";
+            return $"{Amount:F3} {Currency}";
         }
     }
 }
