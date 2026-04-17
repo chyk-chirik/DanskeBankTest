@@ -4,6 +4,7 @@ using DanskeBankTest.Services;
 using DanskeBankTest.Services.ExchangeRate;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -13,12 +14,13 @@ var serviceCollection = new ServiceCollection();
 serviceCollection.Configure(configuration);
 
 using var sp = serviceCollection.BuildServiceProvider();
+var logger = sp.GetRequiredService<ILogger<Program>>();
 
 while (true)
 {
     if (!InputValidator.ValidateConsoleArguments(args, out var exchangeRequest, out var errorMessage))
     {
-        Console.WriteLine(errorMessage);
+        logger.LogWarning(errorMessage);
     }
     else
     {
@@ -28,7 +30,7 @@ while (true)
 
         var exchangedMoney = exchangeRate * exchangeRequest.GetOriginalMoney();
 
-        Console.WriteLine(exchangedMoney);
+        logger.LogInformation(exchangedMoney.ToString());
     }
 
      args = Console.ReadLine()?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);

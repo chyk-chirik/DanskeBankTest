@@ -1,7 +1,9 @@
-﻿using DanskeBankTest.Services.ExchangeRate;
+﻿using Castle.Core.Logging;
+using DanskeBankTest.Services.ExchangeRate;
 using DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi;
 using DanskeBankTest.Services.Types;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
@@ -17,14 +19,14 @@ namespace DanskeBankTest.Services.Tests
 {
     [TestClass]
 
-    public sealed class FreeCurrencyApiWithCacheTests
+    public sealed class FreeCurrencyApiTests
     {
         [TestMethod]
         [DataRow(Currency.DKK, Currency.EUR, Currency.USD)]
         [DataRow(Currency.DKK, Currency.DKK, Currency.USD)]
         [DataRow(Currency.DKK, Currency.EUR, Currency.DKK)]
         [DataRow(Currency.DKK, Currency.DKK, Currency.DKK)]
-        public async Task TestCorrectExchange(Currency baseCurrency, Currency mainCurrency, Currency moneyCurrency)
+        public async Task GetExchangeRate_ReceivedCorrectConversion(Currency baseCurrency, Currency mainCurrency, Currency moneyCurrency)
         {
             var currencyPair = new CurrencyPair(mainCurrency, moneyCurrency);
 
@@ -45,7 +47,8 @@ namespace DanskeBankTest.Services.Tests
             });
 
             var memoryCache = new FusionCache(new FusionCacheOptions());
-            var provider = new FreeCurrencyApiProvider(httpClient, settings, memoryCache);
+            var logger = NullLogger<FreeCurrencyApiProvider>.Instance;
+            var provider = new FreeCurrencyApiProvider(httpClient, settings, logger, memoryCache);
 
             var rate = provider.GetExchangeRate(currencyPair, CancellationToken.None)
                 .ShouldNotThrow();

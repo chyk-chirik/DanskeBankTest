@@ -14,7 +14,7 @@ namespace DanskeBankTest.Services.Tests
         [DataRow(Currency.EUR, Currency.DKK, Currency.DKK)]
         [DataRow(Currency.EUR, Currency.EUR, Currency.DKK)]
         [DataRow(Currency.EUR, Currency.EUR, Currency.EUR)]
-        public void ExchangeOfTwoCurrencyRatesWithSameMainCurrency(Currency baseCurrency, Currency currency1, Currency currency2)
+        public void GetRelativeMoneyRate_CorrectConversion(Currency baseCurrency, Currency currency1, Currency currency2)
         {
             // good point to rethink: if somebody tries to initialize a CurrencyRate with same main and money currency, should we throw an exception or just allow it? 
             var rate1 = new CurrencyRate(new CurrencyPair(baseCurrency, currency1), 1.5m);
@@ -28,7 +28,7 @@ namespace DanskeBankTest.Services.Tests
         [DataRow(Currency.EUR, Currency.DKK, Currency.DKK)]
         [DataRow(Currency.EUR, Currency.EUR, Currency.DKK)]
         [DataRow(Currency.EUR, Currency.EUR, Currency.EUR)]
-        public void IfCurrencyRateMainCurrencyNotSameAsMoneyCurrency_ExchangeFails(Currency rateMainCurrency, Currency rateMoneyCurrency, Currency moneyCurrency)
+        public void TryExchange_IfMainCurrencyNotSameAsMoneyCurrencyExchangeFails(Currency rateMainCurrency, Currency rateMoneyCurrency, Currency moneyCurrency)
         {
             var currencyRate = new CurrencyRate(new CurrencyPair(rateMainCurrency, rateMoneyCurrency), 1.5m);
 
@@ -38,7 +38,7 @@ namespace DanskeBankTest.Services.Tests
         }
 
         [TestMethod]
-        public void ExchangeMoney_MoneyExchangedCorrectly()
+        public void TryExchange_MoneyExchangedCorrectly()
         {
             var currencyRate = new CurrencyRate(new CurrencyPair(Currency.EUR, Currency.DKK), 7.47m);
             var money = new Money(100m, currencyRate.CurrencyPair.MainCurrency);
@@ -54,7 +54,7 @@ namespace DanskeBankTest.Services.Tests
         }
 
         [TestMethod]
-        public void ExchangeMoneyWhenMainCurrencyMatchesMoneyCurrency_NoMathMustBePerfomedAndMoneyShouldNotBeChanged()
+        public void MultiplyMoneyOnConversionRate_WhenSameCurrencyForConversionRateNoMathMustBePerfomedAndMoneyShouldNotBeChanged()
         {
             var currencyRate = new CurrencyRate(new CurrencyPair(Currency.EUR, Currency.EUR), 2); // indicator if calculation was involved
             var money = new Money(100m, currencyRate.CurrencyPair.MainCurrency);

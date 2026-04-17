@@ -12,7 +12,7 @@ namespace DanskeBankTest.Services.Tests
     public sealed class FreeCurrencyApiDeserializationTests
     {
         [TestMethod]
-        public void CurrencyResponsePayloadCanBeDeserialized()
+        public void Deserialize_ResponsePayloadDeserialized()
         {
             var payload = """
                 {
