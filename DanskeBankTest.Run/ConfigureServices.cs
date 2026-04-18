@@ -1,6 +1,6 @@
 ﻿using DanskeBankTest.Services;
 using DanskeBankTest.Services.ExchangeRate;
-using DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi;
+using DanskeBankTest.FreeCurrencyApiClient;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +16,9 @@ namespace DanskeBankTest.Run
         {
             services.ConfigureFreeCurrencyApi(configuration);
 
+            services.Configure<ExchangeRateOptions>(configuration.GetSection("ExchangeRateOptions"));
+            services.AddTransient<IExchangeRateService, ExchangeRateService>();
+
             services.AddFusionCache();
 
             services.AddSerilog((services, loggerConfiguration) => loggerConfiguration
@@ -24,20 +27,6 @@ namespace DanskeBankTest.Run
                 .ReadFrom.Services(services)
                 .Enrich.FromLogContext()
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"));
-        }
-
-        public static void ConfigureFreeCurrencyApi(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<FreeCurrencyApiOptions>(configuration.GetSection("FreeCurrencyApiOptions"));
-            services.AddHttpClient<IExchangeRateService, FreeCurrencyApiProvider>((sp, client) =>
-            {
-                var settings = sp.GetRequiredService<IOptions<FreeCurrencyApiOptions>>().Value;
-
-                client.BaseAddress = new Uri(settings.BaseUrl);
-                client.Timeout = TimeSpan.FromSeconds(6);
-            }).AddHttpMessageHandler<FreeCurrencyApiKeyHandler>(); // with current fusion cache setting we can avoid jitter/curcuit breaks/retries
-
-            services.AddTransient<FreeCurrencyApiKeyHandler>();
         }
     }
 }

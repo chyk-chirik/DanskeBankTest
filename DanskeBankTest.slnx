@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="DanskeBankTest.FreeCurrencyApiClient/DanskeBankTest.FreeCurrencyApiClient.csproj" Id="4a4bdefd-0e2c-40f6-b25a-6c5fd4311c16" />
   <Project Path="DanskeBankTest.Run/DanskeBankTest.Run.csproj" />
   <Project Path="DanskeBankTest.Services.Tests/DanskeBankTest.Services.Tests.csproj" />
   <Project Path="DanskeBankTest.Services/DanskeBankTest.Services.csproj" />

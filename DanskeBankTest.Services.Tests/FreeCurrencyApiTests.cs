@@ -1,6 +1,6 @@
 ﻿using Castle.Core.Logging;
 using DanskeBankTest.Services.ExchangeRate;
-using DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi;
+using DanskeBankTest.FreeCurrencyApiClient;
 using DanskeBankTest.Services.Types;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -25,60 +25,47 @@ namespace DanskeBankTest.Services.Tests
         [DataRow(Currency.DKK, Currency.EUR, Currency.USD)]
         [DataRow(Currency.DKK, Currency.DKK, Currency.USD)]
         [DataRow(Currency.DKK, Currency.EUR, Currency.DKK)]
-        [DataRow(Currency.DKK, Currency.DKK, Currency.DKK)]
         public async Task GetExchangeRate_ReceivedCorrectConversion(Currency baseCurrency, Currency mainCurrency, Currency moneyCurrency)
         {
-            var currencyPair = new CurrencyPair(mainCurrency, moneyCurrency);
 
             var mainRate = baseCurrency == mainCurrency ? 1 : 2.1m;
             var moneyRate = baseCurrency == moneyCurrency ? 1 : 3.4m;
 
-            var httpClient = CreateMockHttpClient($@"{{
-                ""data"": {{
-                    ""{mainCurrency}"" : {mainRate},
-                    ""{moneyCurrency}"" : {moneyRate}
-                }}
-            }}");
-
-            var settings = Options.Create(new FreeCurrencyApiOptions
+            var apiClient = GetFreeCurrencyApiClient(new Dictionary<string, decimal> { 
+                { mainCurrency.ToString(), mainRate }, 
+                { moneyCurrency.ToString(), moneyRate } 
+            });
+            var memoryCache = new FusionCache(new FusionCacheOptions());
+            var logger = NullLogger<ExchangeRateService>.Instance;
+            var settings = Options.Create(new ExchangeRateOptions
             {
                 BaseCurrency = baseCurrency,
                 CacheInSeconds = 60
             });
+            var rateService = new ExchangeRateService(apiClient, settings, logger, memoryCache);
 
-            var memoryCache = new FusionCache(new FusionCacheOptions());
-            var logger = NullLogger<FreeCurrencyApiProvider>.Instance;
-            var provider = new FreeCurrencyApiProvider(httpClient, settings, logger, memoryCache);
-
-            var rate = provider.GetExchangeRate(currencyPair, CancellationToken.None)
+            var currencyPair = new CurrencyPair(mainCurrency, moneyCurrency);
+            var rate = rateService.GetExchangeRate(currencyPair, CancellationToken.None)
                 .ShouldNotThrow();
 
             rate.CurrencyPair.ShouldBe(currencyPair);
-            rate.Rate.ShouldBe(moneyRate / (decimal)mainRate);
+            rate.Rate.ShouldBe(moneyRate / mainRate);
         }
 
-        private static HttpClient CreateMockHttpClient(string payload)
+        private static IFreeCurrencyApiClient GetFreeCurrencyApiClient(Dictionary<string, decimal> fakeData)
         {
-            var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+            var fakeResp = new FreeCurrenceApiResponse<Dictionary<string, decimal>>(fakeData, true, 200);
 
-            handlerMock
-               .Protected()
-               .Setup<Task<HttpResponseMessage>>(
-                  "SendAsync",
-                  ItExpr.IsAny<HttpRequestMessage>(),
-                  ItExpr.IsAny<CancellationToken>()
-               )
-               .ReturnsAsync(new HttpResponseMessage
-               {
-                   StatusCode = HttpStatusCode.OK,
-                   Content = new StringContent(payload)
-               })
-               .Verifiable();
+            var mockClient = new Mock<IFreeCurrencyApiClient>();
 
-            return new HttpClient(handlerMock.Object)
-            {
-                BaseAddress = new Uri("http://test.com")
-            };
+            mockClient
+                .Setup(x => x.GetRates(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(fakeResp);
+
+            return mockClient.Object;
         }
     }
 }

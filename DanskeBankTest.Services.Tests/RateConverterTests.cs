@@ -1,4 +1,4 @@
-﻿using DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi;
+﻿using DanskeBankTest.FreeCurrencyApiClient;
 using DanskeBankTest.Services.Types;
 using Shouldly;
 using System;
@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace DanskeBankTest.Services.Tests
 {
     [TestClass]
-    public sealed class FreeCurrencyApiDeserializationTests
+    public sealed class RateConverterTests
     {
         [TestMethod]
         public void Deserialize_ResponsePayloadDeserialized()
@@ -24,12 +24,18 @@ namespace DanskeBankTest.Services.Tests
                 """;
 
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(payload));
-            var data = FreeCurrencyRateDeserializer.Deserialize(stream);
-           
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new RateConverter() }
+            };
+
+            // Passing the options (with the custom converter) here
+            var data = JsonSerializer.Deserialize<Dictionary<string, decimal>>(stream, options);
+
             data.ShouldNotBeNull();
             data.ShouldNotBeEmpty();
-            data[Currency.DKK].ShouldBe(1);
-            data[Currency.EUR].ShouldBe(1.5m);
+            data["DKK"].ShouldBe(1);
+            data["EUR"].ShouldBe(1.5m);
         }
     }
 }

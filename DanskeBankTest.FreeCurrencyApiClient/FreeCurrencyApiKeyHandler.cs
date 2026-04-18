@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
-namespace DanskeBankTest.Services.ExchangeRate.FreeCurrencyApi
+namespace DanskeBankTest.FreeCurrencyApiClient
 {
-    public class FreeCurrencyApiKeyHandler(IOptions<FreeCurrencyApiOptions> settings) : DelegatingHandler
+    internal class FreeCurrencyApiKeyHandler(IOptions<FreeCurrencyApiOptions> settings) : DelegatingHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
