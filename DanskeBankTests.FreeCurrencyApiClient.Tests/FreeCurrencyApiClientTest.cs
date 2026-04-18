@@ -15,7 +15,7 @@ using System.Text;
 using System.Xml.Linq;
 using ZiggyCreatures.Caching.Fusion;
 
-namespace DanskeBankTest.Services.Tests
+namespace DanskeBankTests.FreeCurrencyApiClient.Tests
 {
     [TestClass]
 
@@ -34,8 +34,8 @@ namespace DanskeBankTest.Services.Tests
                 """);
 
             var memoryCache = new FusionCache(new FusionCacheOptions());
-            var logger = NullLogger<FreeCurrencyApiClient.FreeCurrencyApiClient>.Instance;
-            var client = new FreeCurrencyApiClient.FreeCurrencyApiClient(httpClient, logger);
+            var logger = NullLogger<DanskeBankTest.FreeCurrencyApiClient.FreeCurrencyApiClient>.Instance;
+            var client = new DanskeBankTest.FreeCurrencyApiClient.FreeCurrencyApiClient(httpClient, logger);
 
             var rates = client.GetRates("base currency", ["some currency"], CancellationToken.None)
                 .ShouldNotThrow();

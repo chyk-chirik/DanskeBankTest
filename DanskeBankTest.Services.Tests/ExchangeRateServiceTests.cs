@@ -19,7 +19,7 @@ namespace DanskeBankTest.Services.Tests
 {
     [TestClass]
 
-    public sealed class FreeCurrencyApiTests
+    public sealed class ExchangeRateServiceTests
     {
         [TestMethod]
         [DataRow(Currency.DKK, Currency.EUR, Currency.USD)]
