@@ -10,7 +10,7 @@ namespace DanskeBankTest.Services.Tests
     public sealed class ExchangeRequestTests
     {
         [TestMethod]
-        public void GetOriginalMoney_MainCurrencyMustBeUsedAsAmountCurrency()
+        public void GetOriginalMoney_ExchangeRequest_ExchangeMainCurrencyAndAmountIsMoneyCurrencyAndAmount()
         {
             var mainCurrency = Currency.USD;
             var amount = 100m;

@@ -12,7 +12,7 @@ namespace DanskeBankTests.FreeCurrencyApiClient.Tests
     public sealed class RateConverterTests
     {
         [TestMethod]
-        public void Deserialize_ResponsePayloadDeserialized()
+        public void RateConverter_FreeApiRateResponsePayload_DictionaryCorrectlyDeserialized()
         {
             var payload = """
                 {
@@ -29,11 +29,11 @@ namespace DanskeBankTests.FreeCurrencyApiClient.Tests
                 Converters = { new RateConverter() }
             };
 
+            // Passing the options (with the custom converter) here
             var data = JsonSerializer.Deserialize<Dictionary<string, decimal>>(stream, options);
 
             data.ShouldNotBeNull();
             data.ShouldNotBeEmpty();
-
             data["DKK"].ShouldBe(1);
             data["EUR"].ShouldBe(1.5m);
         }

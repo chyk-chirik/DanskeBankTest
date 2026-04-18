@@ -7,14 +7,14 @@ namespace DanskeBankTest.Services.Tests
     public sealed class InputValidatorTests
     {
         [TestMethod]
-        public void ValidateConsoleArguments_ReturnFalseWhenNoArguments()
+        public void ValidateConsoleArguments_NoArguments_ReturnFalse()
         {
             InputValidator.ValidateConsoleArguments(Array.Empty<string>(), out var exchange, out var errorMessage)
                 .ShouldBeFalse();
         }
 
         [TestMethod]
-        public void ValidateConsoleArguments_ReturnFalseWhenMoreThenTwoArguments()
+        public void ValidateConsoleArguments_CorrectArgumentsButOneExtra_ReturnFalse()
         {
             InputValidator.ValidateConsoleArguments(["EUR/DKK", "100", "LetsImagineWeHaveStrictPolicyOnInput"], out var exchange, out var errorMessage)
                 .ShouldBeFalse();
@@ -32,7 +32,7 @@ namespace DanskeBankTest.Services.Tests
         [DataRow("USD/EUR/", "100")]
         [DataRow("DKK ", "100")]
         [DataRow("DKK/ ", "100")]
-        public void ValidateConsoleArguments_ReturnFalse(string currencyPair, string amount)
+        public void ValidateConsoleArguments_InvalidArguments_ReturnFalse(string currencyPair, string amount)
         {
             InputValidator.ValidateConsoleArguments([ currencyPair, amount ], out var exchange, out var errorMessage)
                 .ShouldBeFalse();
@@ -42,7 +42,7 @@ namespace DanskeBankTest.Services.Tests
         [DataRow("DKK/EUR", "100.31", Currency.DKK, Currency.EUR)]
         [DataRow("EUR/DKK", "100.31", Currency.EUR, Currency.DKK)]
         [DataRow("DKK/DKK", "100.31", Currency.DKK, Currency.DKK)]
-        public void ValidateConsoleArguments_ReturnsCorrectlyParsedValues(string currencyPair, string amount, Currency mainCurrency, Currency moneyCurrency)
+        public void ValidateConsoleArguments_ValidArguments_CorrectParsedValues(string currencyPair, string amount, Currency mainCurrency, Currency moneyCurrency)
         {
             InputValidator.ValidateConsoleArguments([currencyPair, amount], out var exchange, out var errorMessage)
                 .ShouldBeTrue();

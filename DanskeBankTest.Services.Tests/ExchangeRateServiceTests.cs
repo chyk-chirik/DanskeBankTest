@@ -25,7 +25,7 @@ namespace DanskeBankTest.Services.Tests
         [DataRow(Currency.DKK, Currency.EUR, Currency.USD)]
         [DataRow(Currency.DKK, Currency.DKK, Currency.USD)]
         [DataRow(Currency.DKK, Currency.EUR, Currency.DKK)]
-        public async Task GetExchangeRate_ReceivedCorrectConversion(Currency baseCurrency, Currency mainCurrency, Currency moneyCurrency)
+        public async Task GetExchangeRate_RandomCurrencyPairAndBaseCurrencyForFixedRates_CorrectExchange(Currency baseCurrency, Currency mainCurrency, Currency moneyCurrency)
         {
 
             var mainRate = baseCurrency == mainCurrency ? 1 : 2.1m;
