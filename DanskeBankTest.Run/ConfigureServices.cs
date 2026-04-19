@@ -1,12 +1,8 @@
-﻿using DanskeBankTest.Services;
-using DanskeBankTest.Services.ExchangeRate;
+﻿using DanskeBankTest.Services.ExchangeRate;
 using DanskeBankTest.FreeCurrencyApiClient;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Serilog;
-using System.Runtime;
 
 namespace DanskeBankTest.Run
 {

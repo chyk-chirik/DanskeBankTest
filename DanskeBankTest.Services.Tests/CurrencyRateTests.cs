@@ -1,8 +1,5 @@
 ﻿using DanskeBankTest.Services.Types;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DanskeBankTest.Services.Tests
 {

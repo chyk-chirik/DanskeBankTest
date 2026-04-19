@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Text.Json;
 
 namespace DanskeBankTest.FreeCurrencyApiClient

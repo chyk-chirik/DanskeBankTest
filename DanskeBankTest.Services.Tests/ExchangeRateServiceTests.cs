@@ -1,18 +1,10 @@
-﻿using Castle.Core.Logging;
-using DanskeBankTest.Services.ExchangeRate;
+﻿using DanskeBankTest.Services.ExchangeRate;
 using DanskeBankTest.FreeCurrencyApiClient;
 using DanskeBankTest.Services.Types;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
-using Moq.Protected;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using System.Xml.Linq;
 using ZiggyCreatures.Caching.Fusion;
 
 namespace DanskeBankTest.Services.Tests
@@ -40,7 +32,7 @@ namespace DanskeBankTest.Services.Tests
             var settings = Options.Create(new ExchangeRateOptions
             {
                 BaseCurrency = baseCurrency,
-                CacheInSeconds = 60
+                CacheDurationInSeconds = 60
             });
             var rateService = new ExchangeRateService(apiClient, settings, logger, memoryCache);
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DanskeBankTest.Services.Types
+﻿namespace DanskeBankTest.Services.Types
 {
     // more handy overloads could be added, but I think these are the most useful ones for the current requirements
     public record Money(decimal Amount, Currency Currency)

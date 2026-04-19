@@ -1,18 +1,8 @@
-﻿using Castle.Core.Logging;
-using DanskeBankTest.Services.ExchangeRate;
-using DanskeBankTest.FreeCurrencyApiClient;
-using DanskeBankTest.Services.Types;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Moq.Protected;
 using Shouldly;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
-using System.Xml.Linq;
 using ZiggyCreatures.Caching.Fusion;
 
 namespace DanskeBankTests.FreeCurrencyApiClient.Tests

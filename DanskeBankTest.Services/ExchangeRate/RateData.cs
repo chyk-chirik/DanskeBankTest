@@ -1,8 +1,4 @@
 ﻿using DanskeBankTest.Services.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace DanskeBankTest.Services.ExchangeRate
 {

@@ -1,13 +1,14 @@
 ﻿using DanskeBankTest.Services.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DanskeBankTest.Services.ExchangeRate
 {
     public class ExchangeRateOptions
     {
-        public Currency BaseCurrency { get; set; }
-        public int CacheInSeconds { get; set; }
+        public Currency BaseCurrency { get; set; } = Currency.DKK;
+        public int CacheDurationInSeconds { get; set; }
+        public int FailSafeMaxDurationInMinutes { get; set; } = 5;
+        public int FailSafeThrottleDurationInSeconds { get; set; } = 2;
+        public int FactorySoftTimeoutInMilliseconds { get; set; } = 200;
+        public int FactoryHardTimeoutInSeconds { get; set; } = 10;
     }
 }

@@ -31,13 +31,13 @@ namespace DanskeBankTest.Services.ExchangeRate
                GetLatestRates,
                new FusionCacheEntryOptions
                {
-                   Duration = TimeSpan.FromSeconds(options.Value.CacheInSeconds), // well, in real life all values will be moved to config, given config usage just an example
+                   Duration = TimeSpan.FromSeconds(options.Value.CacheDurationInSeconds),
                    IsFailSafeEnabled = true,
-                   FailSafeMaxDuration = TimeSpan.FromHours(2), // issue must be fixed within 2 hours, otherwise financial risk is high 
-                   FailSafeThrottleDuration = TimeSpan.FromSeconds(2),
+                   FailSafeMaxDuration = TimeSpan.FromMinutes(options.Value.FailSafeMaxDurationInMinutes), // issue must be fixed within given period, otherwise financial risk is high 
+                   FailSafeThrottleDuration = TimeSpan.FromSeconds(options.Value.FailSafeThrottleDurationInSeconds),
                    EagerRefreshThreshold = 0.9f,
-                   FactorySoftTimeout = TimeSpan.FromMicroseconds(100),
-                   FactoryHardTimeout = TimeSpan.FromSeconds(4)
+                   FactorySoftTimeout = TimeSpan.FromMilliseconds(options.Value.FactorySoftTimeoutInMilliseconds),
+                   FactoryHardTimeout = TimeSpan.FromSeconds(options.Value.FactoryHardTimeoutInSeconds)
                },
                ct
            );
