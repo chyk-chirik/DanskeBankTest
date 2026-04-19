@@ -26,8 +26,10 @@ namespace DanskeBankTest.Services.ExchangeRate
                 return new CurrencyRate(currencyPair, 1m);
             }
 
+            var baseCurrency = options.Value.BaseCurrency;
+
             var rateData = await cache.GetOrSetAsync(
-               $"FreeCurrencyApiProvider_{options.Value.BaseCurrency}",
+               $"FreeCurrencyApiProvider_{baseCurrency}",
                GetLatestRates,
                new FusionCacheEntryOptions
                {
@@ -42,21 +44,21 @@ namespace DanskeBankTest.Services.ExchangeRate
                ct
            );
 
-            var moneyCurrencyRate = new CurrencyRate(new CurrencyPair(rateData.BaseCurrency, currencyPair.MoneyCurrency), rateData.Data[currencyPair.MoneyCurrency]);
+            var moneyCurrencyRate = new CurrencyRate(new CurrencyPair(baseCurrency, currencyPair.MoneyCurrency), rateData[currencyPair.MoneyCurrency]);
 
-            if (rateData.BaseCurrency == currencyPair.MainCurrency)
+            if (baseCurrency == currencyPair.MainCurrency)
             {
                 return moneyCurrencyRate;
             }
             else
             {
-                var mainCurrencyRate = new CurrencyRate(new CurrencyPair(rateData.BaseCurrency, currencyPair.MainCurrency), rateData.Data[currencyPair.MainCurrency]);
+                var mainCurrencyRate = new CurrencyRate(new CurrencyPair(baseCurrency, currencyPair.MainCurrency), rateData[currencyPair.MainCurrency]);
                 return CurrencyRate.GetRelativeMoneyRate(mainCurrencyRate, moneyCurrencyRate);
             }
         }
 
 
-        private async Task<RateData> GetLatestRates(CancellationToken ct)
+        private async Task<Dictionary<Currency, decimal>> GetLatestRates(CancellationToken ct)
         {
             var baseCurrency = options.Value.BaseCurrency;
             // allocation can be avoided if necessary, we can keep a map string->currency and vice versa
@@ -67,11 +69,7 @@ namespace DanskeBankTest.Services.ExchangeRate
                 throw new Exception($"Failed to get exchange rates from FreeCurrencyApi. StatusCode: {data.StatusCode}, ErrorMessage: {data.ErrorMessage}");
             }
 
-            return new RateData
-            {
-                Data = data.Response!.ToDictionary(kvp => Enum.Parse<Currency>(kvp.Key), kvp => kvp.Value),
-                BaseCurrency = options.Value.BaseCurrency
-            };
+            return data.Response!.ToDictionary(kvp => Enum.Parse<Currency>(kvp.Key), kvp => kvp.Value);
         }
     }
 }
