@@ -28,6 +28,9 @@ namespace DanskeBankTest.Services.ExchangeRate
 
             var baseCurrency = options.Value.BaseCurrency;
 
+            // cache will be good to decouple from the provider, leave here only domain logic
+            // this can be achieved by decorator pattern, having cache on the top of IFreeApiClient
+
             var rateData = await cache.GetOrSetAsync(
                $"FreeCurrencyApiProvider_{baseCurrency}",
                GetLatestRates,
