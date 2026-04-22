@@ -22,7 +22,8 @@ namespace DanskeBankTest.FreeCurrencyApiClient
                 client.BaseAddress = new Uri(settings.BaseUrl);
             })
             .AddHttpMessageHandler<FreeCurrencyApiKeyHandler>()
-            .AddStandardResilienceHandler().Configure((opt, sp) =>
+            .AddStandardResilienceHandler()
+            .Configure((opt, sp) =>
             {
                 var settings = sp.GetRequiredService<IOptions<FreeCurrencyApiOptions>>().Value;
 
