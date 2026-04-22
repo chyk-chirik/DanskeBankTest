@@ -3,6 +3,7 @@ using DanskeBankTest.FreeCurrencyApiClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Microsoft.Extensions.Options;
 
 namespace DanskeBankTest.Run
 {
@@ -10,7 +11,12 @@ namespace DanskeBankTest.Run
     {
         public static void Configure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.ConfigureFreeCurrencyApi(configuration);
+            services.ConfigureFreeCurrencyApi(configuration, resilienceConfiguration: (opt, sp) =>
+            {
+                var exchangeRateOpt = sp.GetRequiredService<IOptions<ExchangeRateOptions>>().Value;
+
+                opt.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(exchangeRateOpt.FactoryHardTimeoutInSeconds);
+            });
 
             services.Configure<ExchangeRateOptions>(configuration.GetSection("ExchangeRateOptions"));
             services.AddTransient<IExchangeRateService, ExchangeRateService>();
@@ -22,7 +28,7 @@ namespace DanskeBankTest.Run
                 .ReadFrom.Configuration(configuration)
                 .ReadFrom.Services(services)
                 .Enrich.FromLogContext()
-                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"));
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}"));
         }
     }
 }
