@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Http.Resilience;
+using Polly;
 
 namespace DanskeBankTest.Run
 {
@@ -11,11 +13,17 @@ namespace DanskeBankTest.Run
     {
         public static void Configure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.ConfigureFreeCurrencyApi(configuration, resilienceConfiguration: (opt, sp) =>
+            services.ConfigureFreeCurrencyApi(configuration)
+            .AddStandardResilienceHandler()
+            .Configure((opt, sp) => 
             {
-                var exchangeRateOpt = sp.GetRequiredService<IOptions<ExchangeRateOptions>>().Value;
+                var settings = sp.GetRequiredService<IOptions<ExchangeRateOptions>>().Value;
 
-                opt.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(exchangeRateOpt.FactoryHardTimeoutInSeconds);
+                opt.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(settings.FactoryHardTimeoutInSeconds);
+                opt.Retry.BackoffType = DelayBackoffType.Exponential;
+                opt.Retry.UseJitter = true;
+                opt.Retry.Delay = TimeSpan.FromMilliseconds(100);
+                opt.AttemptTimeout.Timeout = TimeSpan.FromSeconds(2);
             });
 
             services.Configure<ExchangeRateOptions>(configuration.GetSection("ExchangeRateOptions"));
